@@ -1,0 +1,9 @@
+Oh no! You've just been sucked into a wormhole and teleported
+into an uncharted area of the universe! Luckily, your ship has
+a warp drive so you can jump back home, but traveling through
+the wormhole has temporarily disabled your warp drive system.
+
+You're going to have to wait a while and defend yourself against
+enemies while your system comes back online. Good luck!
+
+Press Spacebar to begin the fight!
