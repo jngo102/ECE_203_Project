@@ -1,7 +1,8 @@
-from Tkinter import  *
+from Tkinter import *
 import random
 import time
 import pickle
+import os
 
 playerData = pickle.load(open("data/leaderboard.txt", 'rb'))
 for player in playerData:
@@ -13,8 +14,11 @@ root = Tk()
 w = Canvas(width=800, height=600)
 w.pack()
 
-bg = PhotoImage(file='images/space.gif')
-w.create_image(400,300,image=bg)
+backgroundDirectory = 'space'
+backgroundFrame = 0
+bg = PhotoImage(file='images/%s/%d.gif' % (backgroundDirectory, backgroundFrame))
+background = w.create_image(400,300,image=bg)
+numberOfFrames = len(os.listdir('images/%s' % backgroundDirectory))
 
 ship_list = []
 score = 0
@@ -59,6 +63,14 @@ def create_ship(time_amount):
         ship = w.create_image(400, 300, image=ss)
         ship_list.append([ship, direction, ss])
 
+def background_animate():
+    global background, backgroundDirectory, backgroundFrame, nextFrame, numberOfFrames
+    backgroundFrame += 1
+    if backgroundFrame >= numberOfFrames - 1:
+        backgroundFrame = 0
+    nextFrame = PhotoImage(file="images/%s/%d.gif" % (backgroundDirectory, backgroundFrame))
+    w.itemconfig(background, image=nextFrame)
+
 def boundary_destroy():
     global lost
 
@@ -100,6 +112,7 @@ def loop():
     if lost:
         pass
     else:
+        background_animate()
         create_ship(1)
         boundary_destroy()
         move_ships(ship_list)

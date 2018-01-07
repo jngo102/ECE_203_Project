@@ -2,6 +2,7 @@ from Tkinter import *
 from random import randint, choice
 import time
 import pickle
+import os
 
 playerData = pickle.load(open("data/leaderboard.txt", 'rb'))
 for player in playerData:
@@ -30,8 +31,8 @@ class asteroid_game():
         self.canvas.grid(row=0, column=0)
         self.canvas.create_image(0, 0, image=self.starryNight, anchor=NW)
 
-        self.asteroid_image = PhotoImage(file="images/moving_asteroid.gif")
         self.asteroids = []
+        self.number_of_frames = len(os.listdir("images/moving_asteroid"))
 
         self.start_button = Button(g, text="START", command=self.start, width=20, height=2, relief=FLAT)
         self.start_button_window = self.frame.create_window(100, 50, anchor=CENTER, window=self.start_button)
@@ -53,6 +54,14 @@ class asteroid_game():
         self.quit_button_window = self.frame.create_window(100, 600, anchor=CENTER, window=self.quit_button)
 
         g.bind("<Button-1>", self.destroy_asteroid)
+
+    def asteroid_animate(self):
+        for asteroid in self.asteroids:
+            asteroid[6] += 1
+            if asteroid[6] >= self.number_of_frames - 1:
+                asteroid[6] = 0
+            asteroid[5] = PhotoImage(file="images/moving_asteroid/%d.gif" % asteroid[6])
+            self.canvas.itemconfig(asteroid[0], image=asteroid[5])
 
     def restart(self):
         self.g.destroy()
@@ -84,6 +93,7 @@ class asteroid_game():
         else:
             print self.asteroids
             self.create_asteroid()
+            self.asteroid_animate()
             for asteroid in self.asteroids:
                 asteroid[1], asteroid[2] = self.canvas.coords(asteroid[0])
                 if asteroid[1] <= 80 or asteroid[1] >= self.canvas_width - 80:
@@ -113,10 +123,12 @@ class asteroid_game():
         if time.time() - self.t >= 2:
             self.t = time.time()
             x, y = randint(100, self.canvas_width - 100), -100
-            asteroid = self.canvas.create_image(x, y, image=self.asteroid_image, anchor=N)
-            xs = choice([randint(-10, -1), randint(1, 10)])
-            ys = randint(1, 10)
-            self.asteroids.append([asteroid, x, y, xs, ys])
+            asteroid_image = PhotoImage(file="images/moving_asteroid/0.gif")
+            asteroid_frame = 0
+            asteroid = self.canvas.create_image(x, y, image=asteroid_image, anchor=N)
+            xs = choice([randint(-20, -5), randint(5, 20)])
+            ys = randint(5, 20)
+            self.asteroids.append([asteroid, x, y, xs, ys, asteroid_image, asteroid_frame])
 
 
 
